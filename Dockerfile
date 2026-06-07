@@ -4,15 +4,14 @@
 # Strategy:
 #   Stage 1 (builder):
 #     - Clone jan-eberwein/snode.c (the fork with auth_idp integrated)
+#     - Inject easyloggingpp (local supplement, not a git submodule)
 #     - Replace src/apps/auth_idp and src/auth with this repo's source
-#     - Build ONLY the auth_idp target using CMake
+#     - Build ONLY the auth_idp target using CMake + Ninja
 #
 #   Stage 2 (runtime):
-#     - Debian slim image with only the binary + required shared libs
+#     - Debian slim image with binary + SNode.C shared libs
 #     - Non-root user for security
-#     - Persistent data volume for SQLite DB and keys
-#
-# Result: A minimal, production-ready C++ IdP container.
+#     - Persistent volumes for SQLite DB and RSA keys
 # =============================================================================
 
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
@@ -20,42 +19,42 @@ FROM debian:bookworm-slim AS builder
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Install all build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Build tools
     build-essential \
     cmake \
     ninja-build \
     git \
     pkg-config \
-    # C++ libraries required by SNode.C
     libssl-dev \
     libsqlite3-dev \
     libbrotli-dev \
     libmagic-dev \
     nlohmann-json3-dev \
-    # Runtime deps (also needed at build time for some checks)
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /build
 
-# Clone the SNode.C fork (your fork, which has the auth_idp changes)
+# Clone the SNode.C fork
 ARG SNODEC_REPO=https://github.com/jan-eberwein/snode.c.git
 ARG SNODEC_BRANCH=master
-RUN git clone --depth=1 --branch ${SNODEC_BRANCH} ${SNODEC_REPO} snodec \
-    && cd snodec \
-    && git submodule update --init --recursive --depth=1
+RUN git clone --depth=1 --branch ${SNODEC_BRANCH} ${SNODEC_REPO} snodec
 
-# Copy this repo's C++ source over the cloned tree
-# (Overrides src/apps/auth_idp and src/auth with the latest from this repo)
+# ── Fix: inject easyloggingpp (it's a local dir, not a git submodule) ─────────
+# The snode.c repo's src/log/CMakeLists.txt uses find_package(EASYLOGGINGPP)
+# which looks in ${EASYLOGGINGPP_ROOT} = supplement/easyloggingpp/
+# We ship these two files in the auth repo so the Docker build is self-contained.
+COPY supplement/easyloggingpp/ /build/snodec/supplement/easyloggingpp/
+
+# ── Override with this repo's latest C++ source ───────────────────────────────
 COPY src/apps/auth_idp/ /build/snodec/src/apps/auth_idp/
 COPY src/auth/           /build/snodec/src/auth/
 
-# Build — only the auth_idp target (saves ~90% build time vs full build)
+# ── Configure + Build (only auth_idp target) ──────────────────────────────────
+# Note: CMakeLists is at src/ (not root), hence -S /build/snodec/src
 RUN cmake \
     -B /build/snodec/build \
-    -S /build/snodec \
+    -S /build/snodec/src \
     -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DSNODEC_SSO_MFA=ON \
@@ -68,7 +67,6 @@ FROM debian:bookworm-slim AS runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Install only runtime dependencies (no compilers, no headers)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl3 \
     libsqlite3-0 \
@@ -76,35 +74,37 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libmagic1 \
     ca-certificates \
     curl \
+    openssl \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
+# Non-root user
 RUN useradd -r -s /sbin/nologin -d /app authidp
 
 WORKDIR /app
 
-# Copy the compiled binary from builder
+# Binary from builder
 COPY --from=builder /opt/auth-idp/bin/auth_idp ./auth_idp
 RUN chmod +x ./auth_idp
 
-# Copy database SQL files
+# SNode.C shared libraries (logger, http, express, etc. are dynamic libs)
+COPY --from=builder /opt/auth-idp/lib/ /usr/local/lib/
+RUN ldconfig
+
+# SQL schema files
 COPY src/apps/auth_idp/database/ ./database/
 
-# Copy startup script
+# Startup script
 COPY scripts/entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
-# Create persistent directories (keys and data — mount as volumes in production)
+# Persistent data dirs
 RUN mkdir -p /app/keys /app/data \
     && chown -R authidp:authidp /app
 
-# Switch to non-root user
 USER authidp
 
-# Expose IdP port
 EXPOSE 8080
 
-# Health check using the /health endpoint
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD curl -fsS http://localhost:${IDP_PORT:-8080}/health | grep -q '"status"' || exit 1
 
