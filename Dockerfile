@@ -15,7 +15,7 @@
 # =============================================================================
 
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
-FROM debian:bookworm-slim AS builder
+FROM ubuntu:24.04 AS builder
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -63,7 +63,7 @@ RUN cmake \
     && cmake --install /build/snodec/build --component apps
 
 # ── Stage 2: Runtime ──────────────────────────────────────────────────────────
-FROM debian:bookworm-slim AS runtime
+FROM ubuntu:24.04 AS runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
