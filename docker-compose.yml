@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         SNODEC_REPO: https://github.com/jan-eberwein/snode.c.git
-        SNODEC_BRANCH: master
+        SNODEC_BRANCH: sso-mfa-authentication
     image: auth-idp:latest
     container_name: auth-idp
     restart: unless-stopped

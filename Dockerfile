@@ -37,7 +37,7 @@ WORKDIR /build
 
 # Clone the SNode.C fork
 ARG SNODEC_REPO=https://github.com/jan-eberwein/snode.c.git
-ARG SNODEC_BRANCH=master
+ARG SNODEC_BRANCH=sso-mfa-authentication
 RUN git clone --depth=1 --branch ${SNODEC_BRANCH} ${SNODEC_REPO} snodec
 
 # ── Fix: inject easyloggingpp (it's a local dir, not a git submodule) ─────────
