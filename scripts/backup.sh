@@ -48,6 +48,13 @@ else
     log "WARNING: auth_auth_keys volume not found."
 fi
 
+# ── Fix permissions so host user can clean up ───────────────────────────────
+docker run --rm \
+    -v "$BACKUP_PATH":/backup \
+    debian:bookworm-slim \
+    chown -R "$(id -u):$(id -g)" /backup \
+    2>>"$LOG_FILE"
+
 # ── Create tar archive ────────────────────────────────────────────────────────
 ARCHIVE="$BACKUP_DIR/backup_${BACKUP_TS}.tar.gz"
 tar -czf "$ARCHIVE" -C "$BACKUP_DIR" "backup_${BACKUP_TS}" 2>>"$LOG_FILE" \
