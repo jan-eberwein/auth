@@ -1,5 +1,6 @@
 #include "Totp.h"
 
+#include <algorithm>
 #include <cstring>
 #include <ctime>
 #include <iomanip>
