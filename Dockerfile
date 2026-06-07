@@ -51,10 +51,10 @@ COPY src/apps/auth_idp/ /build/snodec/src/apps/auth_idp/
 COPY src/auth/           /build/snodec/src/auth/
 
 # ── Configure + Build (only auth_idp target) ──────────────────────────────────
-# Note: CMakeLists is at src/ (not root), hence -S /build/snodec/src
+# Note: Use root CMakeLists.txt to correctly resolve CMAKE_SOURCE_DIR
 RUN cmake \
     -B /build/snodec/build \
-    -S /build/snodec/src \
+    -S /build/snodec \
     -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DSNODEC_SSO_MFA=ON \
