@@ -60,7 +60,9 @@ RUN cmake \
     -DSNODEC_SSO_MFA=ON \
     -DCMAKE_INSTALL_PREFIX=/opt/auth-idp \
     && cmake --build /build/snodec/build --target auth_idp --parallel $(nproc) \
-    && cmake --install /build/snodec/build --component auth_idp
+    && mkdir -p /opt/auth-idp/bin /opt/auth-idp/lib \
+    && cp /build/snodec/build/src/apps/auth_idp/auth_idp /opt/auth-idp/bin/ \
+    && find /build/snodec/build -name "*.so*" -not -path "*/CMakeFiles/*" -exec cp -d {} /opt/auth-idp/lib/ \;
 
 # ── Stage 2: Runtime ──────────────────────────────────────────────────────────
 FROM ubuntu:24.04 AS runtime
