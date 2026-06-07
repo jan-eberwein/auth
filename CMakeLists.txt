@@ -87,5 +87,5 @@ target_include_directories(auth_idp PRIVATE
 install(
     TARGETS auth_idp
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT apps
+    COMPONENT auth_idp
 )
