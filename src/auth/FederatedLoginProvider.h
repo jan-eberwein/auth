@@ -165,18 +165,26 @@ namespace snodec {
                         "or continue with</span></div>\n";
                 html += "<div style=\"display:flex;flex-direction:column;gap:10px;\">\n";
 
-                for (const auto& p : enabled) {
-                    html += "<a href=\"" + idpBaseUrl + "/auth/federated/" + p.id
-                         +  "?client_id=" + clientId
-                         +  "&redirect_uri=" + redirectUri
-                         +  "&state=" + state
-                         +  "&code_challenge=" + httputils::url_encode(codeChallenge)
-                         +  "&code_challenge_method=" + httputils::url_encode(codeChallengeMethod)
-                         +  "\" class=\"btn\" style=\"display:flex;align-items:center;"
-                         +  "justify-content:center;gap:10px;background:" + p.buttonColor
-                         +  ";color:" + p.buttonTextColor
-                         +  ";border:1px solid var(--card-border);\">"
-                         +  p.svgIcon + " Sign in with " + p.displayName + "</a>\n";
+                for (const auto& p : getAllProviders()) {
+                    if (p.enabled && p.id == "google") {
+                        html += "<a href=\"" + idpBaseUrl + "/auth/federated/" + p.id
+                             +  "?client_id=" + clientId
+                             +  "&redirect_uri=" + redirectUri
+                             +  "&state=" + state
+                             +  "&code_challenge=" + httputils::url_encode(codeChallenge)
+                             +  "&code_challenge_method=" + httputils::url_encode(codeChallengeMethod)
+                             +  "\" class=\"btn\" style=\"display:flex;align-items:center;"
+                             +  "justify-content:center;gap:10px;background:" + p.buttonColor
+                             +  ";color:" + p.buttonTextColor
+                             +  ";border:1px solid var(--card-border);\">"
+                             +  p.svgIcon + " Sign in with " + p.displayName + "</a>\n";
+                    } else {
+                        html += "<div class=\"btn\" style=\"display:flex;align-items:center;"
+                             +  "justify-content:center;gap:10px;background:var(--bg-color);"
+                             +  "color:var(--text-muted);border:1px dashed var(--card-border);"
+                             +  "cursor:not-allowed;opacity:0.6;\">"
+                             +  p.svgIcon + " Sign in with " + p.displayName + " (Coming Soon)</div>\n";
+                    }
                 }
 
                 html += "</div>\n";

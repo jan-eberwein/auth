@@ -431,7 +431,7 @@ header {
 }
 .header-nav a:hover { color: var(--link-color); }
 main {
-    flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px;
+    flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 20px;
 }
 .card {
     background: var(--card-bg); border: 1px solid var(--card-border);
@@ -440,7 +440,7 @@ main {
 }
 .dashboard-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px; width: 100%; max-width: 900px; margin: 0 auto; align-items: stretch;
+    gap: 20px; width: 100%; max-width: 1200px; margin: 0 auto; align-items: stretch;
 }
 .stat-card {
     background: var(--card-bg); border: 1px solid var(--card-border);
@@ -902,7 +902,7 @@ static std::string dashboardPage(const std::string& username, int users, int ses
     }
 
     std::string body =
-        "<div style=\"max-width: 900px; margin: 0 auto; width: 100%;\">\n" +
+        "<div style=\"max-width: 1200px; margin: 0 auto; width: 100%;\">\n" +
         alertBox +
         "</div>\n"
         "<div class=\"dashboard-grid\">\n"
