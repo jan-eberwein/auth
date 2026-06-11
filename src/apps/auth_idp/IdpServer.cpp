@@ -510,10 +510,11 @@ input:focus { outline:none; border-color: var(--input-focus); box-shadow: 0 0 0 
 .divider { height: 1px; background: var(--card-border); margin: 24px 0; }
 .clickable-card { cursor: pointer; border: 1px solid var(--card-border); transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; }
 .clickable-card:hover { border-color: var(--link-color); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,102,204,0.1); }
-.logout-btn { background: none; border: none; color: #ff3b30; cursor: pointer; font-weight: 500; font-size: 0.9rem; padding: 0; transition: color 0.2s; }
-.logout-btn:hover { color: #d70015; }
-[data-theme="dark"] .logout-btn { color: #ff453a; }
-[data-theme="dark"] .logout-btn:hover { color: #ff6961; }
+.logout-btn { background: #ff3b30; color: #fff !important; border: none; cursor: pointer; font-weight: 600; font-size: 0.88rem; padding: 7px 18px; border-radius: 20px; transition: background 0.2s, transform 0.1s; letter-spacing: 0.01em; }
+.logout-btn:hover { background: #d70015; transform: translateY(-1px); }
+.logout-btn:active { transform: scale(0.97); }
+[data-theme="dark"] .logout-btn { background: #ff453a; }
+[data-theme="dark"] .logout-btn:hover { background: #ff6961; }
 footer { text-align: center; padding: 24px; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--header-border); background: var(--header-bg); }
 .footer-content { display: flex; justify-content: center; gap: 12px; align-items: center; flex-wrap: wrap; }
 .footer-content a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
@@ -609,7 +610,7 @@ buildPage(const std::string& title, const std::string& body, bool isAuthenticate
     std::string navLinks = isAuthenticated ? accountBtn + "<a href=\"/dashboard\">Dashboard</a>"
                                                           "<a href=\"/settings\">Settings</a>" +
                                                           protectedAppStr +
-                                                          "<form method=\"POST\" action=\"/auth/logout\" style=\"display:inline;\">"
+                                                          "<form method=\"POST\" action=\"/auth/logout\" style=\"display:inline;margin:0;\">" 
                                                           "<button type=\"submit\" class=\"logout-btn\">Sign Out</button></form>"
                                            : "<a href=\"/auth/login\">Sign In</a><a href=\"/auth/register\">Create Account</a>";
 
