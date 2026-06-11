@@ -430,6 +430,30 @@ header {
     transition: color 0.2s;
 }
 .header-nav a:hover { color: var(--link-color); }
+
+.header-top { display: contents; }
+.burger-menu { display: none; background: none; border: none; cursor: pointer; color: var(--text-color); padding: 4px; }
+.burger-menu svg { width: 28px; height: 28px; fill: currentColor; }
+.mobile-user { display: none; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+.desktop-user { display: flex; }
+
+footer {
+    padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.85rem;
+    border-top: 1px solid var(--header-border); background: var(--header-bg);
+    display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px;
+}
+
+@media (max-width: 600px) {
+    header { flex-direction: column; align-items: stretch; padding: 16px 20px; }
+    .header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+    .mobile-user { display: block; }
+    .burger-menu { display: block; }
+    .header-nav { display: none; flex-direction: column; gap: 16px; margin-top: 16px; align-items: flex-start; width: 100%; border-top: 1px solid var(--header-border); padding-top: 16px; }
+    .header-nav.open { display: flex; }
+    .desktop-user { display: none !important; }
+    footer { flex-direction: column; gap: 4px; }
+    .desktop-only { display: none; }
+}
 main {
     flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 20px;
 }
@@ -558,8 +582,8 @@ static std::string
 buildPage(const std::string& title, const std::string& body, bool isAuthenticated = false, const std::string& username = "") {
     std::string accountBtn = "";
     if (isAuthenticated && !username.empty()) {
-        accountBtn = "<a href=\"/settings\" style=\"background:var(--btn-bg);color:#fff;padding:6px "
-                     "14px;border-radius:20px;font-weight:600;display:flex;align-items:center;gap:6px;text-decoration:none;\">"
+        accountBtn = "<a href=\"/settings\" class=\"desktop-user\" style=\"background:var(--btn-bg);color:#fff;padding:6px "
+                     "14px;border-radius:20px;font-weight:600;align-items:center;gap:6px;text-decoration:none;\">"
                      "<svg width=\"16\" height=\"16\" fill=\"currentColor\"><use href=\"#icon-user\"/></svg>" +
                      username + "</a>";
     }
@@ -574,8 +598,7 @@ buildPage(const std::string& title, const std::string& body, bool isAuthenticate
                                                           "<a href=\"/settings\">Settings</a>" +
                                                           protectedAppStr +
                                                           "<form method=\"POST\" action=\"/auth/logout\" style=\"display:inline; margin-left:8px;\">"
-                                                          "<button type=\"submit\" class=\"btn btn-red\" style=\"padding:6px 12px; "
-                                                          "font-size:0.85rem; border-radius:6px; width: auto; display: inline-block;\">Sign Out</button></form>"
+                                                          "<button type=\"submit\" style=\"background:none; border:none; color:var(--text-color); cursor:pointer; font-weight:500; font-size:0.9rem;\">Sign Out</button></form>"
                                            : "<a href=\"/auth/login\">Sign In</a><a href=\"/auth/register\">Create Account</a>";
 
     return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
@@ -590,23 +613,23 @@ buildPage(const std::string& title, const std::string& body, bool isAuthenticate
            "<style>" +
            PAGE_CSS + "</style>\n" + PAGE_JS + "</head>\n<body>\n" + ICONS +
            "<header>\n"
-           "<a href=\"/\" class=\"header-logo\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"var(--btn-bg)\"><path d=\"M12 "
+           "<div class=\"header-top\">\n"
+           "  <div style=\"display:flex; flex-direction:column;\">\n"
+           "    <a href=\"/\" class=\"header-logo\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"var(--btn-bg)\"><path d=\"M12 "
            "2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\"/></svg> SNode.C IdP</a>\n"
-           "<nav class=\"header-nav\">\n" +
+           + (isAuthenticated && !username.empty() ? "    <div class=\"mobile-user\">" + username + "</div>\n" : "") +
+           "  </div>\n"
+           "  <button class=\"burger-menu\" onclick=\"document.getElementById('nav-menu').classList.toggle('open');\">\n"
+           "    <svg viewBox=\"0 0 24 24\"><path d=\"M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z\"/></svg>\n"
+           "  </button>\n"
+           "</div>\n"
+           "<nav class=\"header-nav\" id=\"nav-menu\">\n" +
            navLinks +
            "<button class=\"theme-switch\" onclick=\"toggleTheme()\" id=\"theme-icon\"></button>\n"
            "</nav>\n</header>\n"
            "<main>\n" +
            body +
            "\n</main>\n"
-           "<footer><div class=\"footer-content\">\n"
-           "<span>&copy; <script>document.write(new Date().getFullYear())</script> "
-           "<a href=\"https://github.com/jan-eberwein\" target=\"_blank\" rel=\"noopener noreferrer\">Jan Eberwein</a> &amp; "
-           "<a href=\"https://github.com/VolkerChristian\" target=\"_blank\" rel=\"noopener noreferrer\">Volker Christian</a></span>\n"
-           "<span>|</span>\n"
-           "<a href=\"https://github.com/SNodeC\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub</a>\n"
-           "<span>|</span>\n"
-           "<span>MIT License</span>\n"
            "</div></footer>\n"
            "</body>\n</html>\n";
 }
@@ -1437,8 +1460,14 @@ int main(int argc, char* argv[]) {
             g_db->exec("DELETE FROM session WHERE token=?", {token}, &err);
         }
         res->cookie("snodec_session", "", {{"Path", "/"}, {"Max-Age", "0"}});
-        // Chain logout to Protected Web App for true SSO logout
-        res->redirect("http://localhost:8055/auth/logout");
+        const char* webAppUrl = std::getenv("PROTECTED_WEBAPP_URL");
+        if (webAppUrl != nullptr && std::string(webAppUrl) != "") {
+            std::string url(webAppUrl);
+            if (url.back() == '/') url.pop_back();
+            res->redirect(url + "/auth/logout");
+        } else {
+            res->redirect("/auth/login");
+        }
     });
 
     // ── GET /auth/logout ──────────────────────────────────────────────────────
