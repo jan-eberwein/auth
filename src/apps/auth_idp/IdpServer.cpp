@@ -397,14 +397,14 @@ static const char* PAGE_CSS = R"(
     --card-border: #e8e8ed; --input-bg: #ffffff; --input-border: #d2d2d7;
     --input-focus: #0066cc; --btn-bg: #0066cc; --btn-hover: #004499;
     --btn-text: #ffffff; --link-color: #0066cc; --text-muted: #86868b;
-    --header-bg: rgba(255, 255, 255, 0.8); --header-border: #e8e8ed;
+    --header-bg: rgba(255, 255, 255, 0.85); --header-border: #e8e8ed;
 }
 [data-theme="dark"] {
     --bg-color: #000000; --text-color: #f5f5f7; --card-bg: #1c1c1e;
     --card-border: #333336; --input-bg: #1c1c1e; --input-border: #424245;
     --input-focus: #2997ff; --btn-bg: #2997ff; --btn-hover: #0071e3;
     --btn-text: #ffffff; --link-color: #2997ff; --text-muted: #86868b;
-    --header-bg: rgba(28, 28, 30, 0.8); --header-border: #333336;
+    --header-bg: rgba(28, 28, 30, 0.85); --header-border: #333336;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -415,7 +415,7 @@ body {
 }
 header {
     background: var(--header-bg); border-bottom: 1px solid var(--header-border);
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     position: sticky; top: 0; z-index: 100;
     display: flex; justify-content: space-between; align-items: center;
     padding: 16px 40px;
@@ -424,7 +424,7 @@ header {
     font-weight: 700; font-size: 1.2rem; letter-spacing: 1px; color: var(--text-color);
     text-decoration: none; display: flex; align-items: center; gap: 10px;
 }
-.header-nav { display: flex; align-items: center; gap: 24px; }
+.header-nav { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
 .header-nav a {
     color: var(--text-color); text-decoration: none; font-size: 0.9rem; font-weight: 500;
     transition: color 0.2s;
@@ -436,19 +436,19 @@ main {
 .card {
     background: var(--card-bg); border: 1px solid var(--card-border);
     border-radius: 16px; padding: 40px; width: 100%; max-width: 440px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.04); transition: background-color 0.3s, border-color 0.3s;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.04); transition: background-color 0.3s, border-color 0.3s;
 }
 .dashboard-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px; width: 100%; max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px; width: 100%; max-width: 900px; margin: 0 auto; align-items: stretch;
 }
 .stat-card {
     background: var(--card-bg); border: 1px solid var(--card-border);
-    border-radius: 12px; padding: 24px; display: flex; flex-direction: column;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.02); transition: transform 0.2s;
+    border-radius: 16px; padding: 24px; display: flex; flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s;
 }
-.stat-card:hover { transform: translateY(-2px); }
-.stat-value { font-size: 2.5rem; font-weight: 700; margin-top: 10px; color: var(--text-color); }
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+.stat-value { font-size: 2.2rem; font-weight: 700; margin-top: 12px; color: var(--text-color); }
 .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
 .logo-icon { width: 48px; height: 48px; margin: 0 auto 16px; display: block; fill: var(--text-color); }
 h1 { text-align:center; font-size:1.6rem; font-weight:600; margin-bottom:8px; }
@@ -478,7 +478,7 @@ input:focus { outline:none; border-color: var(--input-focus); box-shadow: 0 0 0 
 .btn-red:hover { background: #d70015; }
 [data-theme="dark"] .btn-red { background: #ff453a; color: #fff; }
 [data-theme="dark"] .btn-red:hover { background: #ff6961; }
-.error-box, .info-box, .success-box { padding: 12px 16px; border-radius: 8px; margin-bottom: 24px; font-size: 0.9rem; }
+.error-box, .info-box, .success-box { padding: 16px; border-radius: 12px; margin-bottom: 24px; font-size: 0.95rem; line-height: 1.4; display: flex; align-items: center; gap: 12px; }
 .error-box { background: rgba(255,59,48,0.1); color: #ff3b30; border: 1px solid rgba(255,59,48,0.2); }
 [data-theme="dark"] .error-box { background: rgba(255,69,58,0.1); color: #ff453a; border: 1px solid rgba(255,69,58,0.2); }
 .info-box { background: rgba(0,102,204,0.1); color: #0066cc; border: 1px solid rgba(0,102,204,0.2); }
@@ -494,14 +494,20 @@ input:focus { outline:none; border-color: var(--input-focus); box-shadow: 0 0 0 
 }
 .theme-switch svg { width: 20px; height: 20px; fill: currentColor; }
 .divider { height: 1px; background: var(--card-border); margin: 24px 0; }
-.clickable-card { cursor: pointer; border: 1px solid var(--input-border); transition: border-color 0.2s, transform 0.2s; }
-.clickable-card:hover { border-color: var(--link-color); transform: translateY(-2px); }
+.clickable-card { cursor: pointer; border: 1px solid var(--card-border); transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; }
+.clickable-card:hover { border-color: var(--link-color); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,102,204,0.1); }
 footer { text-align: center; padding: 24px; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--header-border); background: var(--header-bg); }
-.footer-content { display: flex; justify-content: center; gap: 12px; align-items: center; }
+.footer-content { display: flex; justify-content: center; gap: 12px; align-items: center; flex-wrap: wrap; }
 .footer-content a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
 .footer-content a:hover { color: var(--link-color); }
 @media (min-width: 600px) { .span-2 { grid-column: span 2; } }
-@media (max-width: 600px) { header { padding: 16px 20px; } .header-nav { gap: 12px; } }
+@media (max-width: 600px) { 
+    header { padding: 16px 20px; flex-direction: column; gap: 16px; } 
+    .header-nav { gap: 16px; justify-content: center; } 
+    .card { padding: 24px 20px; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .span-2 { grid-column: span 1; }
+}
 )";
 
 static const char* PAGE_JS = R"(
@@ -552,31 +558,40 @@ static std::string
 buildPage(const std::string& title, const std::string& body, bool isAuthenticated = false, const std::string& username = "") {
     std::string accountBtn = "";
     if (isAuthenticated && !username.empty()) {
-        accountBtn = "<a href=\"/settings\" style=\"background:var(--btn-bg);color:#fff;padding:4px "
-                     "12px;border-radius:20px;font-weight:600;display:flex;align-items:center;gap:6px;text-decoration:none;\">"
+        accountBtn = "<a href=\"/settings\" style=\"background:var(--btn-bg);color:#fff;padding:6px "
+                     "14px;border-radius:20px;font-weight:600;display:flex;align-items:center;gap:6px;text-decoration:none;\">"
                      "<svg width=\"16\" height=\"16\" fill=\"currentColor\"><use href=\"#icon-user\"/></svg>" +
                      username + "</a>";
     }
 
+    const char* webAppUrl = std::getenv("PROTECTED_WEBAPP_URL");
+    std::string protectedAppStr = "";
+    if (webAppUrl != nullptr && std::string(webAppUrl) != "") {
+        protectedAppStr = "<a href=\"" + std::string(webAppUrl) + "\" style=\"color:#3b82f6; font-weight:600; margin-left:8px;\">Protected WebApp</a>";
+    }
+
     std::string navLinks = isAuthenticated ? accountBtn + "<a href=\"/dashboard\">Dashboard</a>"
-                                                          "<a href=\"/settings\">Settings</a>"
-                                                          "<a href=\"http://localhost:8055/\" style=\"color:#3b82f6; font-weight:600; margin-left:8px;\">Protected WebApp</a>"
+                                                          "<a href=\"/settings\">Settings</a>" +
+                                                          protectedAppStr +
                                                           "<form method=\"POST\" action=\"/auth/logout\" style=\"display:inline; margin-left:8px;\">"
                                                           "<button type=\"submit\" class=\"btn btn-red\" style=\"padding:6px 12px; "
-                                                          "font-size:0.85rem; border-radius:6px;\">Sign Out</button></form>"
+                                                          "font-size:0.85rem; border-radius:6px; width: auto; display: inline-block;\">Sign Out</button></form>"
                                            : "<a href=\"/auth/login\">Sign In</a><a href=\"/auth/register\">Create Account</a>";
 
     return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
            "<meta charset=\"UTF-8\">\n"
-           "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n"
+           "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,viewport-fit=cover\">\n"
+           "<meta name=\"description\" content=\"SNode.C Central Identity Provider. Secure OAuth2 & TOTP MFA.\">\n"
+           "<meta name=\"theme-color\" content=\"#0066cc\">\n"
+           "<link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%230066cc%22><path d=%22M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z%22/></svg>\">\n"
            "<title>" +
            title +
-           " — SNode.C</title>\n"
+           " — SNode.C IdP</title>\n"
            "<style>" +
            PAGE_CSS + "</style>\n" + PAGE_JS + "</head>\n<body>\n" + ICONS +
            "<header>\n"
            "<a href=\"/\" class=\"header-logo\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"var(--btn-bg)\"><path d=\"M12 "
-           "2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\"/></svg> SNode.C</a>\n"
+           "2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\"/></svg> SNode.C IdP</a>\n"
            "<nav class=\"header-nav\">\n" +
            navLinks +
            "<button class=\"theme-switch\" onclick=\"toggleTheme()\" id=\"theme-icon\"></button>\n"
@@ -585,9 +600,11 @@ buildPage(const std::string& title, const std::string& body, bool isAuthenticate
            body +
            "\n</main>\n"
            "<footer><div class=\"footer-content\">\n"
-           "<span>&copy; <script>document.write(new Date().getFullYear())</script> Jan Eberwein & Volker Chr.</span>\n"
+           "<span>&copy; <script>document.write(new Date().getFullYear())</script> "
+           "<a href=\"https://github.com/jan-eberwein\" target=\"_blank\" rel=\"noopener noreferrer\">Jan Eberwein</a> &amp; "
+           "<a href=\"https://github.com/VolkerChristian\" target=\"_blank\" rel=\"noopener noreferrer\">Volker Christian</a></span>\n"
            "<span>|</span>\n"
-           "<a href=\"https://github.com/SNodeC\" target=\"_blank\">GitHub</a>\n"
+           "<a href=\"https://github.com/SNodeC\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub</a>\n"
            "<span>|</span>\n"
            "<span>MIT License</span>\n"
            "</div></footer>\n"
@@ -867,7 +884,7 @@ static std::string landingPage() {
     return buildPage("Welcome", body, false);
 }
 
-static std::string dashboardPage(const std::string& username, int users, int sessions, int tokens, const std::string& uptime, bool mfaEnabled) {
+static std::string dashboardPage(const std::string& username, int users, int sessions, int pendingTokens, int mfaUsers, const std::string& uptime, bool mfaEnabled) {
     std::string alertBox = "";
     if (!mfaEnabled) {
         alertBox = 
@@ -882,25 +899,11 @@ static std::string dashboardPage(const std::string& username, int users, int ses
             "Your account is currently secured with a single factor. To add a second factor, please "
             "<a href=\"/settings\" style=\"color:#fb923c; text-decoration:underline; font-weight:600;\">configure MFA in your Account Settings</a>.</div>"
             "</div>";
-    } else {
-        alertBox = 
-            "<div style=\"background:rgba(52,199,89,0.1); border:1.5px solid rgba(52,199,89,0.35); "
-            "border-radius:12px; padding:16px; margin-bottom:28px; display:flex; align-items:center; justify-content:space-between; gap:14px; color:#eafaf1; font-size:0.92rem; text-align:left;\">"
-            "<div style=\"display:flex; align-items:center; gap:14px;\">"
-            "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#34c759\" stroke-width=\"2\" style=\"flex-shrink:0;\">"
-            "<path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/>"
-            "<path d=\"M9 11l2 2 4-4\"/>"
-            "</svg>"
-            "<div><strong>Multi-Factor Authentication (MFA) is active.</strong> Your account is fully secured.</div>"
-            "</div>"
-            "<a href=\"/settings/mfa/disable\" class=\"btn btn-red\" style=\"padding: 6px 12px; font-size: 0.85rem; margin: 0; text-decoration: none;\">Disable MFA</a>"
-            "</div>";
     }
 
     std::string body =
+        "<div style=\"max-width: 900px; margin: 0 auto; width: 100%;\">\n" +
         alertBox +
-        "<div style=\"text-align:center; margin-bottom: 24px;\">\n"
-        "  <h1 style=\"color: white; font-weight: 500; letter-spacing: 1px; font-size: 2rem;\">Identity Provider</h1>\n"
         "</div>\n"
         "<div class=\"dashboard-grid\">\n"
         "  <div class=\"stat-card span-2\" style=\"background: linear-gradient(135deg, var(--btn-bg), #004499); color: white;\">\n"
@@ -934,17 +937,23 @@ static std::string dashboardPage(const std::string& username, int users, int ses
         "</span>\n"
         "  </div>\n"
         "  <div class=\"stat-card\">\n"
-        "    <span class=\"stat-label\">OAuth Tokens Issued</span>\n"
+        "    <span class=\"stat-label\">MFA Enrolled Users</span>\n"
         "    <span class=\"stat-value\">" +
-        std::to_string(tokens) +
+        std::to_string(mfaUsers) +
+        "</span>\n"
+        "  </div>\n"
+        "  <div class=\"stat-card\">\n"
+        "    <span class=\"stat-label\">Pending Auth Codes</span>\n"
+        "    <span class=\"stat-value\">" +
+        std::to_string(pendingTokens) +
         "</span>\n"
         "  </div>\n"
         "  <div class=\"stat-card span-2\">\n"
-        "    <span class=\"stat-label\">Network Gateway (SNode.C)</span>\n"
-        "    <span class=\"stat-value\" style=\"font-size:1.5rem; margin-top:8px;\">Connected to GL-MT3000</span>\n"
+        "    <span class=\"stat-label\">IdP configuration</span>\n"
+        "    <span class=\"stat-value\" style=\"font-size:1.5rem; margin-top:8px;\">Issuer: " + g_issuer + "</span>\n"
         "    <div style=\"display:flex; justify-content:space-between; margin-top:16px; color:var(--text-muted); font-size:0.9rem;\">"
-        "      <span>Nodes: 3 Active</span>"
-        "      <span style=\"color:#28a745;\">● Online</span>"
+        "      <span>Federated Logins: Google</span>"
+        "      <span style=\"color:#28a745;\">● Secured</span>"
         "    </div>"
         "  </div>\n"
         "  <a href=\"/settings\" class=\"stat-card clickable-card span-2\" style=\"text-decoration:none; display:flex; flex-direction:row; "
@@ -964,15 +973,29 @@ static std::string dashboardPage(const std::string& username, int users, int ses
 }
 
 static std::string settingsPage(const std::string& username, const std::string& email, bool mfaEnabled, const std::string& userId) {
-    std::string mfaStatus = mfaEnabled ? "<div class=\"success-box\"><svg "
-                                         "style=\"width:16px;height:16px;fill:currentColor;vertical-align:middle;margin-right:8px;\"><use "
-                                         "href=\"#icon-check\"/></svg> Two-Factor Authentication is <strong>Enabled</strong>.</div>"
-                                       : "<div class=\"error-box\">Two-Factor Authentication is <strong>Disabled</strong>.</div>";
+    std::string mfaStatus = mfaEnabled 
+        ? "<div style=\"display:flex; align-items:center; justify-content:space-between; padding:16px; background:rgba(52,199,89,0.05); border:1px solid rgba(52,199,89,0.2); border-radius:12px; margin-top:12px;\">"
+          "  <div style=\"display:flex; align-items:center; gap:10px;\">"
+          "    <div style=\"width:8px; height:8px; border-radius:50%; background:#34c759;\"></div>"
+          "    <div>"
+          "      <div style=\"font-weight:600; color:var(--text-color);\">MFA Enabled</div>"
+          "      <div style=\"font-size:0.85rem; color:var(--text-muted);\">Account is secured</div>"
+          "    </div>"
+          "  </div>"
+          "  <a href=\"/settings/mfa/disable\" class=\"btn btn-red\" style=\"width:auto; padding:6px 14px; font-size:0.85rem;\">Disable</a>"
+          "</div>"
+        : "<div style=\"display:flex; align-items:center; justify-content:space-between; padding:16px; background:rgba(255,59,48,0.05); border:1px solid rgba(255,59,48,0.2); border-radius:12px; margin-top:12px;\">"
+          "  <div style=\"display:flex; align-items:center; gap:10px;\">"
+          "    <div style=\"width:8px; height:8px; border-radius:50%; background:#ff3b30;\"></div>"
+          "    <div>"
+          "      <div style=\"font-weight:600; color:var(--text-color);\">MFA Disabled</div>"
+          "      <div style=\"font-size:0.85rem; color:var(--text-muted);\">Action recommended</div>"
+          "    </div>"
+          "  </div>"
+          "  <a href=\"/auth/enroll/totp?user_id=" + userId + "\" class=\"btn\" style=\"width:auto; padding:6px 14px; font-size:0.85rem;\">Enable</a>"
+          "</div>";
 
-    std::string mfaAction = mfaEnabled ? "<a href=\"/settings/mfa/disable\" class=\"btn btn-red\" style=\"text-decoration:none;\">Disable 2FA</a>\n"
-                                       : "<a href=\"/auth/enroll/totp?user_id=" + userId + "\" class=\"btn\">Enable 2FA</a>\n";
-
-    std::string body = "<div class=\"card\">\n"
+    std::string body = "<div class=\"card\" style=\"max-width: 500px;\">\n"
                        "<svg class=\"logo-icon\"><use href=\"#icon-settings\"/></svg>\n"
                        "<h1>Account Settings</h1>\n"
                        "<p class=\"subtitle\">Manage your security preferences</p>\n"
@@ -991,8 +1014,8 @@ static std::string settingsPage(const std::string& username, const std::string& 
                        "</div>\n";
     }
     body +=            "<div class=\"divider\"></div>\n"
-                       "<h3>Security Settings</h3><br>\n" +
-                       mfaStatus + mfaAction + "</div>\n";
+                       "<h3 style=\"font-size:1.1rem; font-weight:600;\">Security Settings</h3>\n" +
+                       mfaStatus + "</div>\n";
 
     std::string headerName = formatUserDisplayName(username, email);
     return buildPage("Settings", body, true, headerName);
@@ -1295,7 +1318,7 @@ int main(int argc, char* argv[]) {
             mfaEnabled = std::stoi(r.get(2));
         });
 
-        int totalUsers = 0, activeSessions = 0, totalTokens = 0;
+        int totalUsers = 0, activeSessions = 0, pendingTokens = 0, mfaUsers = 0;
         g_db->query("SELECT COUNT(*) FROM user", {}, [&](const SqliteDatabase::Row& r) {
             totalUsers = std::stoi(r.get(0));
         });
@@ -1303,11 +1326,14 @@ int main(int argc, char* argv[]) {
             activeSessions = std::stoi(r.get(0));
         });
         g_db->query("SELECT COUNT(*) FROM auth_code", {}, [&](const SqliteDatabase::Row& r) {
-            totalTokens = std::stoi(r.get(0));
+            pendingTokens = std::stoi(r.get(0));
+        });
+        g_db->query("SELECT COUNT(*) FROM user WHERE totp_enabled=1", {}, [&](const SqliteDatabase::Row& r) {
+            mfaUsers = std::stoi(r.get(0));
         });
 
         std::string headerName = formatUserDisplayName(username, email);
-        res->send(dashboardPage(headerName, totalUsers, activeSessions, totalTokens, formatUptime(), mfaEnabled > 0));
+        res->send(dashboardPage(headerName, totalUsers, activeSessions, pendingTokens, mfaUsers, formatUptime(), mfaEnabled > 0));
     });
 
     // ── GET /settings ─────────────────────────────────────────────────────────
