@@ -180,10 +180,11 @@ namespace snodec {
                              +  p.svgIcon + " Sign in with " + p.displayName + "</a>\n";
                     } else {
                         html += std::string("<div class=\"btn\" style=\"display:flex;align-items:center;")
-                             +  "justify-content:center;gap:10px;background:var(--bg-color);"
-                                "color:var(--text-muted);border:1px dashed var(--card-border);"
-                                "cursor:not-allowed;opacity:0.6;\">"
-                             +  p.svgIcon + " Sign in with " + p.displayName + " (Coming Soon)</div>\n";
+                             +  "justify-content:center;gap:10px;background:" + p.buttonColor
+                             +  ";color:" + p.buttonTextColor
+                             +  ";border:1px solid var(--card-border);"
+                                "cursor:not-allowed;opacity:0.5;filter:grayscale(40%);\">"
+                             +  p.svgIcon + " Sign in with " + p.displayName + "</div>\n";
                     }
                 }
 
