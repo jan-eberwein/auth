@@ -109,12 +109,12 @@ namespace snodec {
                 providers_["meta"] = meta;
             }
 
-            // Get all providers (enabled and disabled)
+            // Get all providers in specific order: google, apple, meta
             std::vector<FederatedProvider> getAllProviders() const {
                 std::vector<FederatedProvider> result;
-                for (const auto& [_, p] : providers_) {
-                    result.push_back(p);
-                }
+                if (providers_.count("google")) result.push_back(providers_.at("google"));
+                if (providers_.count("apple")) result.push_back(providers_.at("apple"));
+                if (providers_.count("meta")) result.push_back(providers_.at("meta"));
                 return result;
             }
 
@@ -183,7 +183,7 @@ namespace snodec {
                              +  "justify-content:center;gap:10px;background:" + p.buttonColor
                              +  ";color:" + p.buttonTextColor
                              +  ";border:1px solid var(--card-border);"
-                                "cursor:not-allowed;opacity:0.5;filter:grayscale(40%);\">"
+                                "cursor:not-allowed;opacity:0.6;filter:grayscale(60%);\">"
                              +  p.svgIcon + " Sign in with " + p.displayName + "</div>\n";
                     }
                 }

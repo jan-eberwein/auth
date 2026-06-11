@@ -626,13 +626,13 @@ buildPage(const std::string& title, const std::string& body, bool isAuthenticate
            "<style>" +
            PAGE_CSS + "</style>\n" + PAGE_JS + "</head>\n<body>\n" + ICONS +
            "<header>\n"
-           "<div class=\"header-top\">\n"
-           "  <div style=\"display:flex; flex-direction:column;\">\n"
+           "<div class=\"header-top\" style=\"display:flex; justify-content:space-between; align-items:flex-start; width:100%;\">\n"
+           "  <div style=\"display:flex; flex-direction:column; gap:4px;\">\n"
            "    <a href=\"/\" class=\"header-logo\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"var(--btn-bg)\"><path d=\"M12 "
            "2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\"/></svg> SNode.C IdP</a>\n"
-           + (isAuthenticated && !username.empty() ? "    <div class=\"mobile-user\">" + mobileUsername + "</div>\n" : "") +
+           + (isAuthenticated && !username.empty() ? "    <div class=\"mobile-user\" style=\"font-size:0.85rem; color:var(--text-muted); font-weight:500; margin-left:32px;\">" + mobileUsername + "</div>\n" : "") +
            "  </div>\n"
-           "  <button class=\"burger-menu\" onclick=\"document.getElementById('nav-menu').classList.toggle('open');\">\n"
+           "  <button class=\"burger-menu\" onclick=\"document.getElementById('nav-menu').classList.toggle('open');\" style=\"margin-top:2px;\">\n"
            "    <svg viewBox=\"0 0 24 24\"><path d=\"M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z\"/></svg>\n"
            "  </button>\n"
            "</div>\n"
@@ -644,11 +644,9 @@ buildPage(const std::string& title, const std::string& body, bool isAuthenticate
            body +
            "\n</main>\n"
            "<footer><div class=\"footer-content\">\n"
-           "  <span class=\"footer-copyright\">&copy; <script>document.write(new Date().getFullYear())</script> "
-           "  <a href=\"https://github.com/jan-eberwein\" target=\"_blank\" rel=\"noopener noreferrer\">Jan Eberwein</a> &amp; "
-           "  <a href=\"https://github.com/VolkerChristian\" target=\"_blank\" rel=\"noopener noreferrer\">Volker Christian</a></span>\n"
+           "  <span class=\"footer-copyright\">Jan Eberwein &amp; Volker Christian</span>\n"
            "  <span class=\"footer-divider\">|</span>\n"
-           "  <span class=\"footer-links\"><a href=\"https://github.com/SNodeC\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub</a>"
+           "  <span class=\"footer-links\"><a href=\"https://github.com/jan-eberwein/auth\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub</a>"
            "  <span style=\"margin: 0 8px;\">|</span><span>MIT License</span></span>\n"
            "</div></footer>\n"
            "</body>\n</html>\n";
